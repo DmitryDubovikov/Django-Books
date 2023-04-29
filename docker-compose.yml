@@ -1,0 +1,36 @@
+ version: "3.8"
+ services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    image: app:django
+    environment:
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+    container_name: django
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    restart: always
+    depends_on:
+      - db 
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    container_name: postgres_db
+  pgadmin:
+    container_name: pgadmindr
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin
+    ports:
+      - 5050:80
+    depends_on:
+      - db
